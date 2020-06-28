@@ -1,0 +1,17 @@
+{
+    "warn": {
+        "352723980710445069": 1
+    },
+    "coins-utilisateurs": {
+        "694226421157199893": 150,
+        "700356841506472017": 668,
+        "352723980710445069": 2
+    },
+    "level-utilisateurs": {
+        "694226421157199893": 1,
+        "700356841506472017": 0,
+        "352723980710445069": 0
+    },
+    "message-bienvenue": "Bienvenue a toi sur le serveur de test !",
+    "statut-level": true
+}
