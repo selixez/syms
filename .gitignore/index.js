@@ -9,7 +9,7 @@ bot.on("ready", async () => {
     console.log("Le bot est allumé !")
     bot.user.setStatus("dnd");
     setTimeout(() => {
-        bot.user.setUsername("Je suis en développement !");
+        bot.user.setPresence("Je suis en développement !");
     }, 100)
 });
 
