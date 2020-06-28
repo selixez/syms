@@ -12,6 +12,6 @@
         "700356841506472017": 0,
         "352723980710445069": 0
     },
-    "message-bienvenue": "Bienvenue a toi sur le serveur de test !",
+    "message-bienvenue": "Bienvenue a toi sur le serveur ${member} !",
     "statut-level": true
 }
