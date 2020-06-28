@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const token = require("./token.json");
 const fs = require("fs");
 const bdd = require("./bdd.json");
 const fetch = require('node-fetch');
@@ -6,22 +7,22 @@ const fetch = require('node-fetch');
 const bot = new Discord.Client();
 
 bot.on("ready", async () => {
-    console.log("Le bot est allumé !")
+    console.log("Le bot est allumé")
     bot.user.setStatus("dnd");
     setTimeout(() => {
-        bot.user.setActivity("https://discord.gg/jzmCpWq");
+        bot.user.setActivity("développer mon bot");
     }, 100)
 });
 
 bot.on("guildMemberAdd", member => {
     
     if(bdd["message-bienvenue"]){
-        bot.channels.cache.get('726785329985486968').send(bdd["message-bienvenue"]);
+        bot.channels.cache.get('701770132812464169').send(bdd["message-bienvenue"]);
     }
     else{
-        bot.channels.cache.get('726785329985486968').send("Bienvenue sur le serveur");
+        bot.channels.cache.get('701770132812464169').send("Bienvenue sur le serveur");
     }
-    member.roles.add('726800918208577566');
+    member.roles.add('701156465515167755');
 
 })
 
@@ -94,10 +95,38 @@ bot.on("message", async message => {
             }
         }
     }
+    // commande de stats
+    if (message.content.startsWith("!stats")) {
+        let onlines = message.guild.members.cache.filter(({ presence }) => presence.status !== 'offline').size;
+        let totalmembers = message.guild.members.cache.size;
+        let totalservers = bot.guilds.cache.size;
+        let totalbots = message.guild.members.cache.filter(member => member.user.bot).size;
+        let totalrole = message.guild.roles.cache.get('701156465515167755').members.map(member => member.user.tag).length;
+
+        const monembed = new Discord.MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle('Statistiques')
+            .setURL('https://discord.js.org/')
+            .setAuthor('Mon Bot discord', 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org')
+            .setDescription('Voici les statistiques du serveur')
+            .setThumbnail('https://i.imgur.com/wSTFkRM.png')
+            .addFields(
+                { name: 'Nombre de membrs total', value: totalmembers, inline: true },
+                { name: 'Membres connéctés : ', value: onlines, inline: true },
+                { name: 'Nombre de serveurs auquel le bot appartient : ', value: totalservers, inline: true },
+                { name: 'Nombres de bots sur le serveur : ', value: totalbots, inline: true },
+                { name: 'Nombre d\'arrivants : ', value: totalrole, inline: true },
+            )
+            .setImage('https://i.imgur.com/wSTFkRM.png')
+            .setTimestamp()
+            .setFooter('Some footer text here', 'https://i.imgur.com/wSTFkRM.png');
+
+        message.channel.send(monembed);
+    }
+
+    //LEVEL
 
     if (message.content.startsWith('!lvl')) {
-        if (message.member.hasPermission('ADMINISTRATOR')) {
-            
         if (bdd["statut-level"] == true) {
             bdd["statut-level"] = false
             Savebdd();
@@ -106,7 +135,7 @@ bot.on("message", async message => {
         else {
             bdd["statut-level"] = true;
             Savebdd();
-            return message.channel.send('Vous venez d\'allumer le système de level !');
+            return message.channel.send('Vous venez d\'alumer le système de level !');
         }
     }
 
@@ -155,10 +184,33 @@ bot.on("message", async message => {
             }
         }
     }
+     if(message.content.startsWith('!youtube')){
+        const data = await fetch('https://www.googleapis.com/youtube/v3/channels?part=statistics&id=UCWqPk07TBQAKy695NJMnlZg&key=AIzaSyDWDZMYQwGq5ON1u7s4ZNloxp0U5MRw0zo').then(response => response.json());
+        console.log(data)
+        const monembed = new Discord.MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle('Youtube')
+            .setURL('https://discord.js.org/')
+            .setAuthor('Mon Bot discord', 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org')
+            .setDescription('Voici les statistiques youtube')
+            .setThumbnail('https://i.imgur.com/wSTFkRM.png')
+            .addFields(
+                { name: 'Nombre d\'abonnés', value: data.items[0].statistics.subscriberCount, inline: true },
+                { name: 'Nombre de vidéos : ', value: data.items[0].statistics.videoCount, inline: true },
+                { name: 'Nombre de vues sur la chaîne : ', value: data.items[0].statistics.viewCount, inline: true },
+                // { name: 'Nombres de bots sur le serveur : ', value: totalbots, inline: true },
+                // { name: 'Nombre d\'arrivants : ', value: totalrole, inline: true },
+            )
+            .setImage('https://i.imgur.com/wSTFkRM.png')
+            .setTimestamp()
+            .setFooter('Some footer text here', 'https://i.imgur.com/wSTFkRM.png');
 
+        message.channel.send(monembed);
+    }
     if (message.content.startsWith('!ban')) {
         if (message.member.hasPermission('BAN_MEMBERS')) {
 
+            //!ban @test 1234 test
 
             let arg = message.content.trim().split(/ +/g)
 
@@ -176,6 +228,7 @@ bot.on("message", async message => {
                     if (!raison) {
                         return message.channel.send('Vous devez indiquer une raison du ban !');
                     } else {
+                        //on effectue le tempban
                         message.guild.members.ban(utilisateur.id);
                         setTimeout(function () {
                             message.guild.members.unban(utilisateur.id);
