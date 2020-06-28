@@ -9,7 +9,7 @@ bot.on("ready", async () => {
     console.log("Le bot est allumé !")
     bot.user.setStatus("dnd");
     setTimeout(() => {
-        bot.user.setActivity("Je suis en développement !");
+        bot.user.setActivity("https://discord.gg/jzmCpWq");
     }, 100)
 });
 
