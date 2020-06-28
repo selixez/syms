@@ -16,13 +16,14 @@ bot.on("ready", async () => {
 bot.on("guildMemberAdd", member => {
     
     if(bdd["message-bienvenue"]){
-        bot.guild.channels.cache.find(ch => ch.name === 'member-log').send(bdd["message-bienvenue"]);
+        bot.channels.cache.get(ch => ch.name === 'coding').send(bdd["message-bienvenue"]);
     }
     else{
-        bot.guild.channels.cache.find(ch => ch.name === 'member-log').send("Bienvenue sur le serveur");
+        bot.channels.cache.get(ch => ch.name === 'coding').send("Bienvenue sur le serveur");
     }
-    bot.roles.add('726800918208577566');
-});
+    member.roles.add('701156465515167755');
+
+})
 
 bot.on("message", async message => {
 
