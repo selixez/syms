@@ -95,6 +95,8 @@ bot.on("message", async message => {
     }
 
     if (message.content.startsWith('!lvl')) {
+        if (message.member.hasPermission('ADMINISTRATOR')) {
+            
         if (bdd["statut-level"] == true) {
             bdd["statut-level"] = false
             Savebdd();
