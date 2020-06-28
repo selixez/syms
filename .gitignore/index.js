@@ -1,5 +1,4 @@
 const Discord = require("discord.js");
-const token = require("./token.json");
 const fs = require("fs");
 const bdd = require("./bdd.json");
 const fetch = require('node-fetch');
@@ -201,4 +200,4 @@ function Savebdd() {
   }
 
 
-bot.login(token.token);
+bot.login(process.env.TOKEN);
