@@ -202,4 +202,4 @@ function Savebdd() {
   }
 
 
-bot.login(token.token);
+bot.login(process.env.TOKEN);
