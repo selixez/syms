@@ -1,4 +1,6 @@
-const Discord = require("discord.js");
+const Discord = require('discord.js');
+const client = new Discord.Client();
+const token = require("./token.json");
 const fs = require("fs");
 const bdd = require("./bdd.json");
 const fetch = require('node-fetch');
@@ -9,7 +11,7 @@ bot.on("ready", async () => {
     console.log("Le bot est allumé !")
     bot.user.setStatus("dnd");
     setTimeout(() => {
-        bot.user.setActivity("jzmCpWq");
+        bot.user.setActivity("Je suis en développement !");
     }, 100)
 });
 
@@ -22,15 +24,14 @@ bot.on("guildMemberAdd", member => {
         bot.channels.cache.get('726785329985486968').send("Bienvenue sur le serveur");
     }
     member.roles.add('726800918208577566');
-
-})
+});
 
 bot.on("message", async message => {
 
     if (message.author.bot) return;
 
     if (message.content.startsWith("!clear")) {
-        message.delete()
+        // message.delete();
         if (message.member.hasPermission('MANAGE_MESSAGES')) {
 
             let args = message.content.trim().split(/ +/g);
@@ -68,7 +69,7 @@ bot.on("message", async message => {
         }
     }
     if (message.content.startsWith("!warn")) {
-        if (message.member.hasPermission('MANAGE_MESSAGES')) {
+        if (message.member.hasPermission('BAN_MEMBERS')) {
 
             if (!message.mentions.users.first()) return;
             utilisateur = message.mentions.users.first().id
@@ -83,7 +84,7 @@ bot.on("message", async message => {
                 if (!bdd["warn"][utilisateur]) {
                     bdd["warn"][utilisateur] = 1
                     Savebdd();
-                    message.channel.send("Tu as a présent " + bdd["warn"][utilisateur] + " avertissement");
+                    message.channel.send("Tu as a présent " + bdd["warn"][utilisateur] + " avertissement(s)");
                 }
                 else {
                     bdd["warn"][utilisateur]++
@@ -95,33 +96,6 @@ bot.on("message", async message => {
         }
     }
 
-    if (message.content.startsWith("!stats")) {
-        let onlines = message.guild.members.cache.filter(({ presence }) => presence.status !== 'offline').size;
-        let totalmembers = message.guild.members.cache.size;
-        let totalbots = message.guild.members.cache.filter(member => member.user.bot).size;
-        let totalrole = message.guild.roles.cache.get('701156465515167755').members.map(member => member.user.tag).length;
-
-        const monembed = new Discord.MessageEmbed()
-            .setColor('#0099ff')
-            .setTitle('Statistiques 📊')
-            .setAuthor('Syms#7023', 'http://image.noelshack.com/fichiers/2020/26/7/1593370361-react-native-logo.png')
-            .setDescription('Voici les statistiques du serveur !')
-            .setThumbnail('http://image.noelshack.com/fichiers/2020/26/7/1593370361-react-native-logo.png')
-            .addFields(
-                { name: 'Total des membres :', value: totalmembers, inline: true },
-                { name: 'Membres connectés : ', value: onlines, inline: true },
-                { name: 'Robots : ', value: totalbots, inline: true },
-                { name: 'Nombre d\'arrivants : ', value: totalrole, inline: true },
-            )
-            .setImage('http://image.noelshack.com/fichiers/2020/26/7/1593370361-react-native-logo.png')
-            .setTimestamp('24:022)
-            .setFooter('Some footer text here', 'https://i.imgur.com/wSTFkRM.png');
-
-        message.channel.send(monembed);
-    }
-
-    //LEVEL
-
     if (message.content.startsWith('!lvl')) {
         if (bdd["statut-level"] == true) {
             bdd["statut-level"] = false
@@ -131,7 +105,7 @@ bot.on("message", async message => {
         else {
             bdd["statut-level"] = true;
             Savebdd();
-            return message.channel.send('Vous venez d\'alumer le système de level !');
+            return message.channel.send('Vous venez d\'allumer le système de level !');
         }
     }
 
@@ -180,31 +154,10 @@ bot.on("message", async message => {
             }
         }
     }
-     if(message.content.startsWith('!youtube')){
-        const data = await fetch('https://www.googleapis.com/youtube/v3/channels?part=statistics&id=UCWqPk07TBQAKy695NJMnlZg&key=AIzaSyDWDZMYQwGq5ON1u7s4ZNloxp0U5MRw0zo').then(response => response.json());
-        console.log(data)
-        const monembed = new Discord.MessageEmbed()
-            .setColor('#0099ff')
-            .setTitle('Youtube')
-            .setURL('https://discord.js.org/')
-            .setAuthor('Mon Bot discord', 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org')
-            .setDescription('Voici les statistiques youtube')
-            .setThumbnail('https://i.imgur.com/wSTFkRM.png')
-            .addFields(
-                { name: 'Nombre d\'abonnés', value: data.items[0].statistics.subscriberCount, inline: true },
-                { name: 'Nombre de vidéos : ', value: data.items[0].statistics.videoCount, inline: true },
-                { name: 'Nombre de vues sur la chaîne : ', value: data.items[0].statistics.viewCount, inline: true },
-                // { name: 'Nombres de bots sur le serveur : ', value: totalbots, inline: true },
-                // { name: 'Nombre d\'arrivants : ', value: totalrole, inline: true },
-            )
-            .setImage('https://i.imgur.com/wSTFkRM.png')
-            .setTimestamp()
-            .setFooter('Syms Co. - 2020', 'http://image.noelshack.com/fichiers/2020/26/7/1593370361-react-native-logo.png');
 
-        message.channel.send(monembed);
-    }
     if (message.content.startsWith('!ban')) {
         if (message.member.hasPermission('BAN_MEMBERS')) {
+
 
             let arg = message.content.trim().split(/ +/g)
 
@@ -222,7 +175,6 @@ bot.on("message", async message => {
                     if (!raison) {
                         return message.channel.send('Vous devez indiquer une raison du ban !');
                     } else {
-                        //on effectue le tempban
                         message.guild.members.ban(utilisateur.id);
                         setTimeout(function () {
                             message.guild.members.unban(utilisateur.id);
@@ -250,4 +202,4 @@ function Savebdd() {
   }
 
 
-bot.login(process.env.TOKEN);
+bot.login(token.token);
